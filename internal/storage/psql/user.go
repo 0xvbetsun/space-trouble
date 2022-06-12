@@ -1,8 +1,10 @@
 package psql
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/vbetsun/space-trouble/internal/core"
 )
@@ -20,7 +22,10 @@ func NewUser(db *sql.DB) *User {
 // CreateUser creates new user in DB
 func (r *User) CreateUser(u core.User) (core.User, error) {
 	var user core.User
-	err := r.db.QueryRow(createUserQuery(), u.FirstName, u.LastName, u.Gender, u.Birthday).
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := r.db.QueryRowContext(ctx, createUserQuery(), u.FirstName, u.LastName, u.Gender, u.Birthday).
 		Scan(&user.ID, &user.FirstName, &user.LastName, &user.Gender, &user.Birthday)
 	return user, err
 }
@@ -28,8 +33,10 @@ func (r *User) CreateUser(u core.User) (core.User, error) {
 // GetUser returns user from DB by name
 func (r *User) GetUser(firstName, lastName string) (core.User, error) {
 	var user core.User
-	err := r.db.QueryRow(getUserQuery(), firstName, lastName).Scan(&user.ID)
-
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err := r.db.QueryRowContext(ctx, getUserQuery(), firstName, lastName).Scan(&user.ID)
+	fmt.Println(err, user)
 	return user, err
 }
 

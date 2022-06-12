@@ -1,0 +1,7 @@
+BEGIN;
+
+TRUNCATE TABLE launchpads CASCADE;
+TRUNCATE TABLE destinations CASCADE;
+TRUNCATE TABLE trips_schedule CASCADE;
+
+COMMIT;

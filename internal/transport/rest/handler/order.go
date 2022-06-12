@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/render"
 	"github.com/vbetsun/space-trouble/internal/core"
+	"github.com/vbetsun/space-trouble/internal/service"
 	"go.uber.org/zap"
 )
 
@@ -15,19 +16,15 @@ type ctxKeyOrder string
 
 const orderCtx ctxKeyOrder = "order"
 
-type OrderService interface{}
-type UserService interface{}
-
 // OrderHandler represents handler for rest endpoints related to order entity
 type OrderHandler struct {
-	orderService OrderService
-	userService  OrderService
-	log          *zap.Logger
+	services *service.Service
+	log      *zap.Logger
 }
 
 // NewOrderHandler returns new instance of orders handler
-func NewOrderHandler(orderService OrderService, userService UserService, log *zap.Logger) *OrderHandler {
-	return &OrderHandler{orderService, userService, log}
+func NewOrderHandler(services *service.Service, log *zap.Logger) *OrderHandler {
+	return &OrderHandler{services, log}
 }
 
 func (h *OrderHandler) orderCtx(next http.Handler) http.Handler {

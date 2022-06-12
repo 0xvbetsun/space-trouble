@@ -5,14 +5,14 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/vbetsun/space-trouble/internal/service"
 	"go.uber.org/zap"
 )
 
 // Deps represents external dependencies for rest handlers
 type Deps struct {
-	OrderService OrderService
-	UserService  UserService
-	Log          *zap.Logger
+	Services *service.Service
+	Log      *zap.Logger
 }
 
 // Handler represents rest modules of API
@@ -24,7 +24,7 @@ type Handler struct {
 // New returns instance of rest handler
 func New(deps Deps) *Handler {
 	return &Handler{
-		Order: NewOrderHandler(deps.OrderService, deps.UserService, deps.Log),
+		Order: NewOrderHandler(deps.Services, deps.Log),
 		log:   deps.Log,
 	}
 }

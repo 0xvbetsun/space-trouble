@@ -3,9 +3,11 @@ module github.com/vbetsun/space-trouble
 go 1.18
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/render v1.0.1
+	github.com/google/uuid v1.1.2
 	github.com/jackc/pgx/v4 v4.16.1
 	github.com/spf13/viper v1.12.0
 	go.uber.org/zap v1.21.0

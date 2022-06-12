@@ -45,14 +45,15 @@ func main() {
 		logger.Fatal(fmt.Sprintf("can't connect to the DB %v", err))
 	}
 	store := psql.NewStorage(db)
-	service := service.NewService(service.Deps{
-		OrderStorage: store.Order,
-		UserStorage:  store.User,
+	services := service.NewService(service.Deps{
+		LaunchpadStorage: store.Launchpad,
+		OrderStorage:     store.Order,
+		TripStorage:      store.Trip,
+		UserStorage:      store.User,
 	})
 	h := handler.New(handler.Deps{
-		OrderService: service.Order,
-		UserService:  service.User,
-		Log:          logger,
+		Services: services,
+		Log:      logger,
 	})
 	srv := new(rest.Server)
 	port := viper.GetString("PORT")
