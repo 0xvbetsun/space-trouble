@@ -12,6 +12,9 @@ help:
 run-api: ## Run application
 	go run ./cmd/api/main.go
 
+run-monitor: ## Run monitor
+	go run ./cmd/monitor/main.go
+
 migrate-up: ## Run migrations
 	docker run -v $(PWD)/deployments/migrations:/migrations --network host migrate/migrate \
 	-path=/migrations/ -database postgres://postgres:$(POSTGRES_PASSWORD)@localhost:5434/postgres?sslmode=disable up

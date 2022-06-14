@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/spf13/viper"
+	"github.com/vbetsun/space-trouble/configs"
 	"github.com/vbetsun/space-trouble/internal/service"
 	"github.com/vbetsun/space-trouble/internal/storage/psql"
 	"github.com/vbetsun/space-trouble/internal/transport/rest"
@@ -25,7 +26,7 @@ func main() {
 		log.Fatalf("can't initialize zap logger: %v", err)
 	}
 	defer logger.Sync()
-	if err := LoadConfig("configs"); err != nil {
+	if err := configs.LoadConfig("configs"); err != nil {
 		logger.Fatal(fmt.Sprintf("can't read config: %v", err))
 	}
 	dbHost := viper.GetString("POSTGRES_HOST")
@@ -52,7 +53,7 @@ func main() {
 		UserStorage:      store.User,
 	})
 	h := handler.New(handler.Deps{
-		Services: services,
+		Services: handler.Services{Order: services.Order},
 		Log:      logger,
 	})
 	srv := new(rest.Server)
@@ -77,16 +78,4 @@ func main() {
 	if err := db.Close(); err != nil {
 		logger.Error("Error occurred while db is closing " + err.Error())
 	}
-}
-
-func LoadConfig(path string) error {
-	viper.AddConfigPath(path)
-	viper.SetConfigName("config")
-	if err := viper.ReadInConfig(); err != nil {
-		return err
-	}
-	viper.AddConfigPath("deployments")
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
-	return viper.MergeInConfig()
 }

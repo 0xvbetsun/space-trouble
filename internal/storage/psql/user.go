@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/vbetsun/space-trouble/internal/core"
+	"github.com/vbetsun/space-trouble/internal/dto"
 )
 
 // User represents repository for users entity
@@ -19,24 +20,27 @@ func NewUser(db *sql.DB) *User {
 	return &User{db}
 }
 
-// CreateUser creates new user in DB
-func (r *User) CreateUser(u core.User) (core.User, error) {
+// Create creates new user in DB
+func (r *User) Create(u *dto.User) (core.User, error) {
 	var user core.User
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	err := r.db.QueryRowContext(ctx, createUserQuery(), u.FirstName, u.LastName, u.Gender, u.Birthday).
 		Scan(&user.ID, &user.FirstName, &user.LastName, &user.Gender, &user.Birthday)
+
 	return user, err
 }
 
-// GetUser returns user from DB by name
-func (r *User) GetUser(firstName, lastName string) (core.User, error) {
+// GetByFullName returns user from DB by name
+func (r *User) GetByFullName(firstName, lastName string) (core.User, error) {
 	var user core.User
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	err := r.db.QueryRowContext(ctx, getUserQuery(), firstName, lastName).Scan(&user.ID)
-	fmt.Println(err, user)
+
+	err := r.db.QueryRowContext(ctx, getUserQuery(), firstName, lastName).
+		Scan(&user.ID, &user.FirstName, &user.LastName, &user.Gender, &user.Birthday)
+
 	return user, err
 }
 
@@ -50,7 +54,7 @@ func createUserQuery() string {
 
 func getUserQuery() string {
 	return fmt.Sprintf(`--sql
-		SELECT id FROM %s 
+		SELECT id, first_name, last_name, gender, birthday FROM %s 
 		WHERE first_name = $1 
 		AND last_name = $2
 	`, usersTable)

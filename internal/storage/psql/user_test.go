@@ -7,9 +7,10 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
 	"github.com/vbetsun/space-trouble/internal/core"
+	"github.com/vbetsun/space-trouble/internal/dto"
 )
 
-func TestUser_GetUser(t *testing.T) {
+func TestUser_GetByFullName(t *testing.T) {
 	db, mock := NewMock()
 	repo := NewUser(db)
 	defer func() {
@@ -57,7 +58,7 @@ func TestUser_GetUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := repo.GetUser(tt.input.firstName, tt.input.lastName)
+			got, err := repo.GetByFullName(tt.input.firstName, tt.input.lastName)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -69,7 +70,7 @@ func TestUser_GetUser(t *testing.T) {
 	}
 }
 
-func TestUser_CreateUser(t *testing.T) {
+func TestUser_Create(t *testing.T) {
 	db, mock := NewMock()
 	repo := NewUser(db)
 	defer func() {
@@ -84,7 +85,7 @@ func TestUser_CreateUser(t *testing.T) {
 	tests := []struct {
 		name    string
 		mock    func()
-		input   core.User
+		input   dto.User
 		want    core.User
 		wantErr bool
 	}{
@@ -95,10 +96,10 @@ func TestUser_CreateUser(t *testing.T) {
 				mock.ExpectQuery("INSERT INTO users").
 					WithArgs("Test", "Test", core.Male, birthday).WillReturnRows(rows)
 			},
-			input: core.User{
+			input: dto.User{
 				FirstName: "Test",
 				LastName:  "Test",
-				Gender:    core.Male,
+				Gender:    "male",
 				Birthday:  birthday,
 			},
 			want: core.User{
@@ -116,10 +117,10 @@ func TestUser_CreateUser(t *testing.T) {
 				mock.ExpectQuery("INSERT INTO users").
 					WithArgs("", "", "", "").WillReturnRows(rows)
 			},
-			input: core.User{
+			input: dto.User{
 				FirstName: "",
 				LastName:  "",
-				Gender:    0,
+				Gender:    "",
 			},
 			wantErr: true,
 		},
@@ -129,7 +130,7 @@ func TestUser_CreateUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := repo.CreateUser(tt.input)
+			got, err := repo.Create(&tt.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
