@@ -1,6 +1,8 @@
 package service
 
-import "github.com/vbetsun/space-trouble/internal/core"
+import (
+	"github.com/vbetsun/space-trouble/internal/core"
+)
 
 type TripStorage interface {
 	GetByDestination(destinationID string) (core.Trip, error)

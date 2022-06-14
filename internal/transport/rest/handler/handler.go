@@ -20,7 +20,7 @@ type LaunchpadService interface {
 
 type OrderService interface {
 	GetByID(orderID string) (core.Order, error)
-	GetAll() ([]core.Order, error)
+	GetAll() ([]*core.Order, error)
 	Create(userID string, data *dto.Order) (core.Order, error)
 	RemoveByID(orderID string) error
 }

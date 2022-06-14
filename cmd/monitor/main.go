@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/spf13/viper"
 	"github.com/vbetsun/space-trouble/configs"
 	"github.com/vbetsun/space-trouble/internal/storage/psql"
 	"go.uber.org/zap"
@@ -27,21 +26,18 @@ func main() {
 	}
 	defer logger.Sync()
 
-	if err := configs.LoadConfig("configs"); err != nil {
+	conf, err := configs.LoadConfig("configs")
+	if err != nil {
 		logger.Fatal(fmt.Sprintf("can't read config: %v", err))
 	}
-	dbHost := viper.GetString("POSTGRES_HOST")
-	if dbHost == "" {
-		dbHost = viper.GetString("db.host")
-	}
-	apiURL := viper.GetString("api.url")
+
 	db, err := psql.NewDB(psql.Config{
-		Host:     dbHost,
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		DBName:   viper.GetString("db.dbname"),
-		Password: viper.GetString("POSTGRES_PASSWORD"),
-		SSLMode:  viper.GetString("db.sslmode"),
+		Host:     conf.DB.Host,
+		Port:     conf.DB.Port,
+		Username: conf.DB.Username,
+		DBName:   conf.DB.DBName,
+		Password: conf.DB.Password,
+		SSLMode:  conf.DB.SSLMode,
 		Logger:   logger,
 	})
 	if err != nil {
@@ -50,7 +46,7 @@ func main() {
 	store := psql.NewStorage(db)
 
 	for {
-		launches, err := fetchLaunches(apiURL)
+		launches, err := fetchLaunches(conf.API.URL)
 		errCount := 0
 		if err != nil {
 			logger.Fatal(err.Error())

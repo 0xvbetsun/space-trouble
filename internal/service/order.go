@@ -7,7 +7,7 @@ import (
 
 type OrderStorage interface {
 	GetByID(orderID string) (core.Order, error)
-	GetAll() ([]core.Order, error)
+	GetAll() ([]*core.Order, error)
 	Create(userID string, data *dto.Order) (string, error)
 	RemoveByID(orderID string) error
 }
@@ -28,7 +28,7 @@ func (s *OrderService) GetByID(orderID string) (core.Order, error) {
 }
 
 // GetAll handles business logic of fetching all not deleted orders in the system
-func (s *OrderService) GetAll() ([]core.Order, error) {
+func (s *OrderService) GetAll() ([]*core.Order, error) {
 	return s.storage.GetAll()
 }
 
@@ -38,7 +38,9 @@ func (s *OrderService) Create(userID string, data *dto.Order) (core.Order, error
 	if err != nil {
 		return core.Order{}, err
 	}
-	return s.storage.GetByID(orderID)
+	order, err := s.storage.GetByID(orderID)
+
+	return order, err
 }
 
 // RemoveByID handles business logic of removing single order by its ID

@@ -6,8 +6,7 @@ import (
 )
 
 type UserStorage interface {
-	Create(data *dto.User) (core.User, error)
-	GetByFullName(firstName, lastName string) (core.User, error)
+	FindOrCreate(data *dto.User) (core.User, error)
 }
 
 // UserService represents service for handling users in the system
@@ -20,14 +19,7 @@ func NewUserService(storage UserStorage) *UserService {
 	return &UserService{storage}
 }
 
+// FindOrCreate returns existed user by first & last name or creates new one
 func (s UserService) FindOrCreate(data *dto.User) (core.User, error) {
-	var emptyUser core.User
-	user, err := s.storage.GetByFullName(data.FirstName, data.LastName)
-	if err != nil {
-		return emptyUser, nil
-	}
-	if user != emptyUser {
-		return user, err
-	}
-	return s.storage.Create(data)
+	return s.storage.FindOrCreate(data)
 }

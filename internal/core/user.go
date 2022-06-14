@@ -1,31 +1,21 @@
 // Package core represents domain's entities
 package core
 
-import "time"
-
-type Gender int
-
-const (
-	Male Gender = iota
-	Female
+import (
+	"time"
 )
 
-func (g Gender) String() string {
-	switch g {
-	case Male:
-		return "male"
-	case Female:
-		return "female"
-	}
-	return "unknown"
-}
+const (
+	Male   = "male"
+	Female = "female"
+)
 
 // User it is an entity of end user for this application
 type User struct {
 	ID        string
 	FirstName string
 	LastName  string
-	Gender    Gender
+	Gender    string
 	Birthday  time.Time
 	CreatedAt time.Time
 }

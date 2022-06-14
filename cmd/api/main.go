@@ -11,7 +11,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/spf13/viper"
 	"github.com/vbetsun/space-trouble/configs"
 	"github.com/vbetsun/space-trouble/internal/service"
 	"github.com/vbetsun/space-trouble/internal/storage/psql"
@@ -26,20 +25,18 @@ func main() {
 		log.Fatalf("can't initialize zap logger: %v", err)
 	}
 	defer logger.Sync()
-	if err := configs.LoadConfig("configs"); err != nil {
+	conf, err := configs.LoadConfig("configs")
+	if err != nil {
 		logger.Fatal(fmt.Sprintf("can't read config: %v", err))
 	}
-	dbHost := viper.GetString("POSTGRES_HOST")
-	if dbHost == "" {
-		dbHost = viper.GetString("db.host")
-	}
+
 	db, err := psql.NewDB(psql.Config{
-		Host:     dbHost,
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		DBName:   viper.GetString("db.dbname"),
-		Password: viper.GetString("POSTGRES_PASSWORD"),
-		SSLMode:  viper.GetString("db.sslmode"),
+		Host:     conf.DB.Host,
+		Port:     conf.DB.Port,
+		Username: conf.DB.Username,
+		DBName:   conf.DB.DBName,
+		Password: conf.DB.Password,
+		SSLMode:  conf.DB.SSLMode,
 		Logger:   logger,
 	})
 	if err != nil {
@@ -53,22 +50,23 @@ func main() {
 		UserStorage:      store.User,
 	})
 	h := handler.New(handler.Deps{
-		Services: handler.Services{Order: services.Order},
-		Log:      logger,
+		Services: handler.Services{
+			Launchpad: services.Launchpad,
+			Order:     services.Order,
+			Trip:      services.Trip,
+			User:      services.User,
+		},
+		Log: logger,
 	})
 	srv := new(rest.Server)
-	port := viper.GetString("PORT")
-	if port == "" {
-		port = viper.GetString("port")
-	}
 	go func() {
-		if err := srv.Run(port, h.Routes()); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			logger.Fatal(fmt.Sprintf("can't start server on port %s, err: %v", port, err))
+		if err := srv.Run(conf.Port, h.Routes()); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			logger.Fatal(fmt.Sprintf("can't start server on port %s, err: %v", conf.Port, err))
 		} else {
 			logger.Info("Server stopped gracefully")
 		}
 	}()
-	logger.Info("Server is starting on port: " + port)
+	logger.Info("Server is starting on port: " + conf.Port)
 	exit := make(chan os.Signal, 1)
 	signal.Notify(exit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	<-exit

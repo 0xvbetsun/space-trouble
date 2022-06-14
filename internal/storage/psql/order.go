@@ -25,7 +25,18 @@ func (r *Order) GetByID(orderID string) (core.Order, error) {
 	var order core.Order
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	err := r.db.QueryRowContext(ctx, orderByIDQuery(), orderID).Scan(&order.ID)
+	err := r.db.QueryRowContext(ctx, orderByIDQuery(), orderID).
+		Scan(
+			&order.ID,
+			&order.FirstName,
+			&order.LastName,
+			&order.Gender,
+			&order.Birthday,
+			&order.Launchpad,
+			&order.Destination,
+			&order.Status,
+			&order.LaunchDate,
+		)
 
 	return order, err
 }
@@ -44,8 +55,8 @@ func (r *Order) Create(userID string, data *dto.Order) (string, error) {
 }
 
 // GetAllOrders returns all orders from DB
-func (r *Order) GetAll() ([]core.Order, error) {
-	var orders []core.Order
+func (r *Order) GetAll() ([]*core.Order, error) {
+	orders := make([]*core.Order, 0)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -55,7 +66,7 @@ func (r *Order) GetAll() ([]core.Order, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var order core.Order
+		order := new(core.Order)
 		err := rows.Scan(
 			&order.ID,
 			&order.FirstName,
@@ -89,11 +100,23 @@ func (r *Order) RemoveByID(orderID string) error {
 
 func orderByIDQuery() string {
 	return fmt.Sprintf(`--sql
-		SELECT o.id
+		SELECT 
+			o.id,
+			u.first_name,
+			u.last_name,
+			u.gender,
+			u.birthday,
+			l.full_name AS launchpad, 
+			d.name AS destination, 
+			o.status,
+			o.launch_date
 		FROM %s AS o 
+		INNER JOIN %s AS u ON u.id = o.user_id 
+		INNER JOIN %s AS d ON d.id = o.destination_id 
+		INNER JOIN %s AS l ON l.id = o.launchpad_id 
 		WHERE o.deleted_at IS NULL
 		AND o.id = $1
-	`, ordersTable)
+	`, ordersTable, usersTable, destinationsTable, launchpadsTable)
 }
 
 func allOrdersQuery() string {
@@ -107,12 +130,13 @@ func allOrdersQuery() string {
 			l.full_name AS launchpad, 
 			d.name AS destination, 
 			o.status,
-			o.launch_date 
+			o.launch_date
 		FROM %s AS o 
 		INNER JOIN %s AS u ON u.id = o.user_id 
 		INNER JOIN %s AS d ON d.id = o.destination_id 
 		INNER JOIN %s AS l ON l.id = o.launchpad_id 
 		WHERE o.deleted_at IS NULL
+		ORDER BY o.created_at DESC
 	`, ordersTable, usersTable, destinationsTable, launchpadsTable)
 }
 
@@ -128,7 +152,7 @@ func removeOrderByIDQuery() string {
 	return fmt.Sprintf(`--sql
 		UPDATE %s
 		SET deleted_at = CURRENT_TIMESTAMP
-		WHERE o.deleted_at IS NULL
-		AND o.id = $1
+		WHERE deleted_at IS NULL
+		AND id = $1
 	`, ordersTable)
 }
