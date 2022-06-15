@@ -8,7 +8,11 @@ The project represents the configuration and setup server for Space Trouble proj
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/vbetsun/space-trouble.svg)](https://github.com/vbetsun/space-trouble)
 [![GoDoc](https://pkg.go.dev/badge/github.com/vbetsun/space-trouble)](https://pkg.go.dev/github.com/vbetsun/space-trouble)
 
+## Structure 
 
+The project consists of 2 parts:
+- **API**  that handles all HTTP communication
+- **Monitor** that actualizes information about SpaceX launches from their API
 ## Prerequisites
 
 - Git
@@ -39,11 +43,13 @@ change env variables for your needs
 ```dotenv
 PORT=8000 # port for serving API
 DOCS_PORT=8080 # port for serving OpenAPI documentation
+
+POSTGRES_PORT=5432 # port of postgre db
 POSTGRES_HOST=localhost # host of postgre db
 POSTGRES_PASSWORD=someStr0ngPass # password to psql
 ```
 
-and start the application via `docker compose`. It should start the API server, PostgreSQL database, pgAdmin and OpenAPI documentation, which you can see on http://localhost:${DOCS_PORT}
+and start the application via `docker compose`. It should start the API server, monitor for actualizing data, PostgreSQL database, pgAdmin and OpenAPI documentation, which you can see on http://localhost:${DOCS_PORT}
 
 ```sh
 docker compose -f ./deployments/docker-compose.yml up -d
@@ -61,8 +67,10 @@ make migrate-up
 
 ## How to Test
 
-for testing our API we're going to use Postman collection via Newman
+for testing our API we're going to use unit tests and Postman collection via Newman
 
 ```sh
-make test-e2e
+make test # runs unit and integration tests
+
+make test-e2e # this command runs e2e tests for running application
 ```

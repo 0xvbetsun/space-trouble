@@ -35,6 +35,7 @@ func LoadConfig(path string) (*Config, error) {
 		return conf, err
 	}
 	conf.Port = viper.GetString("PORT")
+	conf.DB.Port = viper.GetString("POSTGRES_PORT")
 	conf.DB.Host = viper.GetString("POSTGRES_HOST")
 	conf.DB.Password = viper.GetString("POSTGRES_PASSWORD")
 
