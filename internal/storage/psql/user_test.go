@@ -32,9 +32,9 @@ func TestUser_FindOrCreate(t *testing.T) {
 		{
 			name: "Ok",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id", "first_name", "last_name", "gender", "birthday"}).AddRow(uuid, "Test", "Test", 0, birthday)
-				mock.ExpectQuery("INSERT INTO users").
-					WithArgs("Test", "Test", core.Male, birthday).WillReturnRows(rows)
+				rows := sqlmock.NewRows([]string{"id", "first_name", "last_name", "gender", "birthday"}).AddRow(uuid, "Test", "Test", "male", birthday)
+				mock.ExpectQuery("SELECT (.+) FROM users").
+					WithArgs("Test", "Test").WillReturnRows(rows)
 			},
 			input: dto.User{
 				FirstName: "Test",
@@ -54,7 +54,7 @@ func TestUser_FindOrCreate(t *testing.T) {
 			name: "Empty Fields",
 			mock: func() {
 				rows := sqlmock.NewRows([]string{"id", "first_name", "last_name", "gender"})
-				mock.ExpectQuery("INSERT INTO users").
+				mock.ExpectQuery("SELECT (.+) FROM users").
 					WithArgs("", "", "", "").WillReturnRows(rows)
 			},
 			input: dto.User{
