@@ -1,0 +1,388 @@
+{
+	"info": {
+		"_postman_id": "9a470512-1ff8-4b09-beac-4bdf8b6311bd",
+		"name": "Space Trouble",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1410323"
+	},
+	"item": [
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create new Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"id\": { \"type\": \"string\" },",
+									"        \"first_name\": { \"type\": \"string\" },",
+									"        \"last_name\": { \"type\": \"string\" },",
+									"        \"gender\": { \"type\": \"string\" },",
+									"        \"birthday\": { \"type\": \"string\" },",
+									"        \"launchpad\": { \"type\": \"string\" },",
+									"        \"destination\": { \"type\": \"string\" },",
+									"        \"status\": { \"type\": \"string\" },",
+									"        \"launch_date\": { \"type\": \"string\" },",
+									"    },",
+									"    \"required\": [\"id\", \"first_name\", \"last_name\", \"gender\", \"birthday\", \"launchpad\", \"destination\", \"status\", \"launch_date\"]",
+									"};",
+									"",
+									"pm.test(\"Validate schema\", () => {",
+									"    pm.response.to.have.jsonSchema(schema)",
+									"})",
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"pm.test(\"Content-Type is present\", () => {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"orderID\", pm.response.json().id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{$randomFirstName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"gender\": \"male\",\n    \"birthday\": \"1990-01-01\",\n    \"launchpad_id\": \"5e9e4502f509092b78566f87\",\n    \"destination_id\": \"ef495232-0d9b-4a37-a00c-db856e7b367d\",\n    \"launch_date\": \"2022-06-16\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/orders",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"first_name\": \"{{$randomFirstName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"gender\": \"male\",\n    \"birthday\": \"1990-01-01\",\n    \"launchpad_id\": \"5e9e4502f509092b78566f87\",\n    \"destination_id\": \"ef495232-0d9b-4a37-a00c-db856e7b367d\",\n    \"launch_date\": \"2022-06-16\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/orders",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "Vlads-MacBook-Pro.local/iNWkRht31U-000004"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 14 Jun 2022 21:30:09 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "286"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"0c3788cd-da16-4398-8937-f21f36085cd4\",\n    \"first_name\": \"Winona\",\n    \"last_name\": \"Hagenes\",\n    \"gender\": \"male\",\n    \"birthday\": \"1990-01-01T00:00:00Z\",\n    \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n    \"destination\": \"Ganymede\",\n    \"status\": \"active\",\n    \"launch_date\": \"2022-06-16T00:00:00Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "List of Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"id\": { \"type\": \"string\" },",
+									"            \"first_name\": { \"type\": \"string\" },",
+									"            \"last_name\": { \"type\": \"string\" },",
+									"            \"gender\": { \"type\": \"string\" },",
+									"            \"birthday\": { \"type\": \"string\" },",
+									"            \"launchpad\": { \"type\": \"string\" },",
+									"            \"destination\": { \"type\": \"string\" },",
+									"            \"status\": { \"type\": \"string\" },",
+									"            \"launch_date\": { \"type\": \"string\" },",
+									"        },",
+									"        \"required\": [\"id\", \"first_name\", \"last_name\", \"gender\", \"birthday\", \"launchpad\", \"destination\", \"status\", \"launch_date\"]",
+									"    },",
+									"};",
+									"",
+									"pm.test(\"Validate schema\", () => {",
+									"    pm.response.to.have.jsonSchema(schema)",
+									"})",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"pm.test(\"Content-Type is present\", () => {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"pm.test(\"List should have previously created 'orderID'\", () => {",
+									"    const ids = pm.response.json().map(el => el.id)",
+									"    pm.expect(ids).to.include(pm.collectionVariables.get(\"orderID\"))",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/orders",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/orders",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "Vlads-MacBook-Pro.local/tRT1henvwB-000002"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 14 Jun 2022 21:57:34 GMT"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"98263ace-3980-4940-a7d7-ccfbe7bcc450\",\n        \"first_name\": \"Sydni\",\n        \"last_name\": \"Thiel\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"812f508b-8bc7-42e8-92f8-935806596137\",\n        \"first_name\": \"Cade\",\n        \"last_name\": \"Ankunding\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"1ad938d3-6018-4ad0-8182-a38c46fb229e\",\n        \"first_name\": \"Cade\",\n        \"last_name\": \"Ankunding\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"2ead0703-824e-4949-971c-47b5ac898a35\",\n        \"first_name\": \"Cade\",\n        \"last_name\": \"Ankunding\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"6109d309-20e4-410c-8800-bbeb7dcf2e94\",\n        \"first_name\": \"Abel\",\n        \"last_name\": \"Weimann\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"a30a1985-e010-4bb2-970b-4aefa0e10be0\",\n        \"first_name\": \"Micah\",\n        \"last_name\": \"Ondricka\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"3f23286a-0bb3-4854-81c2-be95195c122f\",\n        \"first_name\": \"Dedric\",\n        \"last_name\": \"Vonrueden\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"5b2ed10a-71cb-4d6a-bb73-819966ef040b\",\n        \"first_name\": \"Gus\",\n        \"last_name\": \"Hettinger\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"1b50a40c-d6f1-4808-9e3d-18bac2644a48\",\n        \"first_name\": \"Vincenza\",\n        \"last_name\": \"Reynolds\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"62068971-b2d4-464c-8519-7feed7796351\",\n        \"first_name\": \"Mac\",\n        \"last_name\": \"Schuppe\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"cffade29-ffea-45db-a5a5-a97b977b5686\",\n        \"first_name\": \"Itzel\",\n        \"last_name\": \"Schimmel\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    },\n    {\n        \"id\": \"e6ef7a20-810c-462c-a902-74bf32983ee7\",\n        \"first_name\": \"Westley\",\n        \"last_name\": \"Lindgren\",\n        \"gender\": \"male\",\n        \"birthday\": \"1990-01-01T00:00:00Z\",\n        \"launchpad\": \"Vandenberg Space Force Base Space Launch Complex 4E\",\n        \"destination\": \"Ganymede\",\n        \"status\": \"active\",\n        \"launch_date\": \"2022-06-16T00:00:00Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Remove Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 204\", () => {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/orders/:orderID",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders",
+								":orderID"
+							],
+							"variable": [
+								{
+									"key": "orderID",
+									"value": "{{orderID}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/orders/:orderID",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"orders",
+										":orderID"
+									],
+									"variable": [
+										{
+											"key": "orderID",
+											"value": "{{orderID}}"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Request-Id",
+									"value": "Vlads-MacBook-Pro.local/tRT1henvwB-000001"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 14 Jun 2022 21:57:28 GMT"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Order Not Found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/orders/:orderID",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"orders",
+										":orderID"
+									],
+									"variable": [
+										{
+											"key": "orderID",
+											"value": "{{orderID}}"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "Vlads-MacBook-Pro.local/H04nNdKg2v-000012"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 15 Jun 2022 04:59:48 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "28"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"order not found\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "orderID",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

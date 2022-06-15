@@ -11,9 +11,12 @@ import (
 )
 
 const (
-	usersTable       = "users"
-	ordersTable      = "orders"
-	usersOrdersTable = "users_orders"
+	usersTable                = "users"
+	ordersTable               = "orders"
+	launchpadsTable           = "launchpads"
+	destinationsTable         = "destinations"
+	tripsScheduleTable        = "trips_schedule"
+	launchpadReservationTable = "launchpad_reservations"
 )
 
 // Config represents all required fields for connecting to postgres db
@@ -29,8 +32,10 @@ type Config struct {
 
 // Storage contains all implemented repositories
 type Storage struct {
-	User  *User
-	Order *Order
+	Launchpad *Launchpad
+	Order     *Order
+	Trip      *Trip
+	User      *User
 }
 
 // String returns connection string from config
@@ -64,7 +69,9 @@ func NewDB(cfg Config) (*sql.DB, error) {
 // NewStorage returns all implemented repositories
 func NewStorage(db *sql.DB) *Storage {
 	return &Storage{
-		User:  NewUser(db),
-		Order: NewOrder(db),
+		Launchpad: NewLaunchpad(db),
+		Order:     NewOrder(db),
+		Trip:      NewTrip(db),
+		User:      NewUser(db),
 	}
 }

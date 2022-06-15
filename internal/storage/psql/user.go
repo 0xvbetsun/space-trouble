@@ -1,10 +1,13 @@
 package psql
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/vbetsun/space-trouble/internal/core"
+	"github.com/vbetsun/space-trouble/internal/dto"
 )
 
 // User represents repository for users entity
@@ -17,34 +20,39 @@ func NewUser(db *sql.DB) *User {
 	return &User{db}
 }
 
-// CreateUser creates new user in DB
-func (r *User) CreateUser(u core.User) (core.User, error) {
+// FindOrCreate returns user from DB and creates it if user doesn't exist
+func (r *User) FindOrCreate(data *dto.User) (core.User, error) {
 	var user core.User
-	err := r.db.QueryRow(createUserQuery(), u.FirstName, u.LastName, u.Gender, u.Birthday).
-		Scan(&user.ID, &user.FirstName, &user.LastName, &user.Gender, &user.Birthday)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := r.db.QueryRowContext(
+		ctx, findUserQuery(), data.FirstName, data.LastName,
+	).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Gender, &user.Birthday)
+
+	if err == sql.ErrNoRows {
+		err = r.db.QueryRowContext(
+			ctx, createUserQuery(), data.FirstName, data.LastName, data.Gender, data.Birthday,
+		).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Gender, &user.Birthday)
+	}
+
 	return user, err
 }
 
-// GetUser returns user from DB by name
-func (r *User) GetUser(firstName, lastName string) (core.User, error) {
-	var user core.User
-	err := r.db.QueryRow(getUserQuery(), firstName, lastName).Scan(&user.ID)
-
-	return user, err
+func findUserQuery() string {
+	return fmt.Sprintf(`--sql
+		SELECT id, first_name, last_name, gender, birthday
+		FROM %s
+		WHERE first_name = $1
+		AND last_name = $2
+	`, usersTable)
 }
 
 func createUserQuery() string {
 	return fmt.Sprintf(`--sql
 		INSERT INTO %s (first_name, last_name, gender, birthday) 
 		VALUES ($1, $2, $3, $4) 
+		ON CONFLICT ON CONSTRAINT users_first_name_last_name_key DO NOTHING
 		RETURNING id, first_name, last_name, gender, birthday
-	`, usersTable)
-}
-
-func getUserQuery() string {
-	return fmt.Sprintf(`--sql
-		SELECT id FROM %s 
-		WHERE first_name = $1 
-		AND last_name = $2
 	`, usersTable)
 }

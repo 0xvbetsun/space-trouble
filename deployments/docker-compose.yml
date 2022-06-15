@@ -4,12 +4,36 @@ services:
       container_name: server
       build:
         context: ../
-        dockerfile: ./build/Dockerfile
+        dockerfile: ./build/api.Dockerfile
       environment:
         PORT: ${PORT}
+        POSTGRES_PORT: ${POSTGRES_PORT}
+        POSTGRES_HOST: ${POSTGRES_HOST}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       ports:
       - "${PORT}:${PORT}"
+      restart: always
+      volumes:
+        - type: bind
+          source: ../deployments
+          target: /deployments
+        - type: bind
+          source: ../configs
+          target: /configs
+      depends_on:
+        - postgres
+        - monitor
+      networks:
+        - postgres
+  monitor:
+      container_name: monitor
+      build:
+        context: ../
+        dockerfile: ./build/monitor.Dockerfile
+      environment:
+        POSTGRES_PORT: ${POSTGRES_PORT}
+        POSTGRES_HOST: ${POSTGRES_HOST}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       restart: always
       volumes:
         - type: bind
@@ -52,7 +76,7 @@ services:
   
   pgadmin:
     container_name: pgadmin_container
-    image: dpage/pgadmin4:6.8
+    image: dpage/pgadmin4:6.10
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}

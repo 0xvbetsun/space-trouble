@@ -8,8 +8,11 @@ import (
 )
 
 var (
-	ErrRenderResp    = errors.New("can't render response")
-	ErrOrderNotFound = errors.New("order not found")
+	ErrRenderResp        = errors.New("can't render response")
+	ErrOrderNotFound     = errors.New("order not found")
+	ErrTripNotFound      = errors.New("trip not found")
+	ErrLaunchpadNotFound = errors.New("launchpad not found")
+	ErrOrderCtxEmpty     = errors.New("order was lost")
 )
 
 type ErrResponse struct {
@@ -32,8 +35,13 @@ func ErrInvalidRequest(err error) render.Renderer {
 	}
 }
 
-var ErrNotFound = &ErrResponse{HTTPStatusCode: 404, ErrorText: "Resource not found."}
-
+func ErrNotFound(err error) render.Renderer {
+	return &ErrResponse{
+		Err:            err,
+		HTTPStatusCode: 404,
+		ErrorText:      err.Error(),
+	}
+}
 func ErrRender(err error) render.Renderer {
 	return &ErrResponse{
 		Err:            err,

@@ -45,7 +45,7 @@ func (h *Handler) Recoverer(next http.Handler) http.Handler {
 					panic(rvr)
 				}
 				if err := render.Render(w, r, ErrInternalServer(errors.New("something went wrong"))); err != nil {
-					h.log.Error(ErrRenderResp.Error())
+					h.log.Error(err.Error())
 				}
 			}
 		}()

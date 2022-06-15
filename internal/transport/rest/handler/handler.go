@@ -2,17 +2,48 @@
 package handler
 
 import (
+	"time"
+
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/vbetsun/space-trouble/internal/core"
+	"github.com/vbetsun/space-trouble/internal/dto"
 	"go.uber.org/zap"
 )
 
+const layout = "2006-01-02"
+
+type LaunchpadService interface {
+	GetForDate(launchpadID string, date time.Time) (core.Launchpad, error)
+}
+
+type OrderService interface {
+	GetByID(orderID string) (core.Order, error)
+	GetAll() ([]*core.Order, error)
+	Create(userID string, data *dto.Order) (core.Order, error)
+	RemoveByID(orderID string) error
+}
+
+type TripService interface {
+	GetByDestination(destinationID string) (core.Trip, error)
+}
+
+type UserService interface {
+	FindOrCreate(data *dto.User) (core.User, error)
+}
+
+type Services struct {
+	Launchpad LaunchpadService
+	Order     OrderService
+	Trip      TripService
+	User      UserService
+}
+
 // Deps represents external dependencies for rest handlers
 type Deps struct {
-	OrderService OrderService
-	UserService  UserService
-	Log          *zap.Logger
+	Services
+	Log *zap.Logger
 }
 
 // Handler represents rest modules of API
@@ -24,7 +55,7 @@ type Handler struct {
 // New returns instance of rest handler
 func New(deps Deps) *Handler {
 	return &Handler{
-		Order: NewOrderHandler(deps.OrderService, deps.UserService, deps.Log),
+		Order: NewOrderHandler(deps.Services, deps.Log),
 		log:   deps.Log,
 	}
 }

@@ -5,3 +5,5 @@ db:
   username: "postgres"
   dbname: "postgres"
   sslmode: "disable"
+api: 
+  url: "https://api.spacexdata.com/v4"

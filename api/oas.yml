@@ -1,0 +1,252 @@
+openapi: 3.0.0
+info:
+  title: Space Trouble
+  version: 1.0.0
+servers:
+  - url: http://{{baseurl}}
+tags:
+  - name: Orders
+paths:
+  /orders:
+    post:
+      tags:
+        - Orders
+      summary: Create new Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                first_name: '{{$randomFirstName}}'
+                last_name: '{{$randomLastName}}'
+                gender: male
+                birthday: '1990-01-01'
+                launchpad_id: 5e9e4502f509092b78566f87
+                destination_id: ef495232-0d9b-4a37-a00c-db856e7b367d
+                launch_date: '2022-06-16'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            X-Request-Id:
+              schema:
+                type: string
+                example: Vlads-MacBook-Pro.local/iNWkRht31U-000004
+            Date:
+              schema:
+                type: string
+                example: Tue, 14 Jun 2022 21:30:09 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '286'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                id: 0c3788cd-da16-4398-8937-f21f36085cd4
+                first_name: Winona
+                last_name: Hagenes
+                gender: male
+                birthday: '1990-01-01T00:00:00Z'
+                launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                destination: Ganymede
+                status: active
+                launch_date: '2022-06-16T00:00:00Z'
+    get:
+      tags:
+        - Orders
+      summary: List of Orders
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            X-Request-Id:
+              schema:
+                type: string
+                example: Vlads-MacBook-Pro.local/tRT1henvwB-000002
+            Date:
+              schema:
+                type: string
+                example: Tue, 14 Jun 2022 21:57:34 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 98263ace-3980-4940-a7d7-ccfbe7bcc450
+                  first_name: Sydni
+                  last_name: Thiel
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: 812f508b-8bc7-42e8-92f8-935806596137
+                  first_name: Cade
+                  last_name: Ankunding
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: 1ad938d3-6018-4ad0-8182-a38c46fb229e
+                  first_name: Cade
+                  last_name: Ankunding
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: 2ead0703-824e-4949-971c-47b5ac898a35
+                  first_name: Cade
+                  last_name: Ankunding
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: 6109d309-20e4-410c-8800-bbeb7dcf2e94
+                  first_name: Abel
+                  last_name: Weimann
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: a30a1985-e010-4bb2-970b-4aefa0e10be0
+                  first_name: Micah
+                  last_name: Ondricka
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: 3f23286a-0bb3-4854-81c2-be95195c122f
+                  first_name: Dedric
+                  last_name: Vonrueden
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: 5b2ed10a-71cb-4d6a-bb73-819966ef040b
+                  first_name: Gus
+                  last_name: Hettinger
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: 1b50a40c-d6f1-4808-9e3d-18bac2644a48
+                  first_name: Vincenza
+                  last_name: Reynolds
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: 62068971-b2d4-464c-8519-7feed7796351
+                  first_name: Mac
+                  last_name: Schuppe
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: cffade29-ffea-45db-a5a5-a97b977b5686
+                  first_name: Itzel
+                  last_name: Schimmel
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+                - id: e6ef7a20-810c-462c-a902-74bf32983ee7
+                  first_name: Westley
+                  last_name: Lindgren
+                  gender: male
+                  birthday: '1990-01-01T00:00:00Z'
+                  launchpad: Vandenberg Space Force Base Space Launch Complex 4E
+                  destination: Ganymede
+                  status: active
+                  launch_date: '2022-06-16T00:00:00Z'
+  /orders/{orderID}:
+    delete:
+      tags:
+        - Orders
+      summary: Remove Order
+      parameters:
+        - name: orderID
+          in: path
+          schema:
+            type: string
+          required: true
+          example: '{{orderID}}'
+      responses:
+        '204':
+          description: No Content
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+                example: Vlads-MacBook-Pro.local/tRT1henvwB-000001
+            Date:
+              schema:
+                type: string
+                example: Tue, 14 Jun 2022 21:57:28 GMT
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: null
+        '404':
+          description: Not Found
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            X-Request-Id:
+              schema:
+                type: string
+                example: Vlads-MacBook-Pro.local/H04nNdKg2v-000012
+            Date:
+              schema:
+                type: string
+                example: Wed, 15 Jun 2022 04:59:48 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '28'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: order not found
