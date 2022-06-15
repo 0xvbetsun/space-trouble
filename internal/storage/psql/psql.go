@@ -15,7 +15,6 @@ const (
 	ordersTable               = "orders"
 	launchpadsTable           = "launchpads"
 	destinationsTable         = "destinations"
-	usersOrdersTable          = "users_orders"
 	tripsScheduleTable        = "trips_schedule"
 	launchpadReservationTable = "launchpad_reservations"
 )

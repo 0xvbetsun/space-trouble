@@ -2,7 +2,6 @@ BEGIN;
 
 DROP TABLE IF EXISTS launchpad_reservations;
 DROP TABLE IF EXISTS trips_schedule;
-DROP TABLE IF EXISTS orders_users;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS launchpads;

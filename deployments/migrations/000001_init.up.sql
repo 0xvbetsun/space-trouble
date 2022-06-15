@@ -4,7 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TYPE gender AS ENUM ('male', 'female');
 
-CREATE TYPE status AS ENUM ('active', 'cancelled');
+CREATE TYPE status AS ENUM ('active', 'canceled');
 
 CREATE TABLE users (
 	id uuid DEFAULT uuid_generate_v4(),
@@ -34,20 +34,14 @@ CREATE TABLE orders (
 	id uuid DEFAULT uuid_generate_v4(),
 	launchpad_id VARCHAR(24) NOT NULL,
 	destination_id uuid NOT NULL,
-    status status NOT NULL,
+	user_id uuid NOT NULL,
+    status status NOT NULL DEFAULT 'active',
     launch_date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP,
 	PRIMARY KEY (id),
     FOREIGN KEY (launchpad_id) REFERENCES launchpads(id) ON DELETE RESTRICT,
-    FOREIGN KEY (destination_id) REFERENCES destinations(id) ON DELETE RESTRICT
-);
-
-CREATE TABLE orders_users (
-	order_id uuid NOT NULL,
-	user_id uuid NOT NULL,
-	PRIMARY KEY (order_id, user_id),
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE RESTRICT,
+    FOREIGN KEY (destination_id) REFERENCES destinations(id) ON DELETE RESTRICT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT
 );
 
@@ -61,7 +55,6 @@ CREATE TABLE trips_schedule (
 CREATE TABLE launchpad_reservations (
     launchpad_id VARCHAR(24) NOT NULL,
     date DATE NOT NULL,
-    reserved BOOLEAN NOT NULL DEFAULT false,
 	PRIMARY KEY (launchpad_id, date),
     FOREIGN KEY (launchpad_id) REFERENCES launchpads(id) ON DELETE RESTRICT
 );

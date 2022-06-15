@@ -7,69 +7,10 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
 	"github.com/vbetsun/space-trouble/internal/core"
+	"github.com/vbetsun/space-trouble/internal/dto"
 )
 
-func TestUser_GetUser(t *testing.T) {
-	db, mock := NewMock()
-	repo := NewUser(db)
-	defer func() {
-		repo.db.Close()
-	}()
-
-	uuid := uuid.New().String()
-	type args struct {
-		firstName string
-		lastName  string
-	}
-	tests := []struct {
-		name    string
-		mock    func()
-		input   args
-		want    core.User
-		wantErr bool
-	}{
-		{
-			name: "Ok",
-			mock: func() {
-				rows := sqlmock.NewRows([]string{"id"}).
-					AddRow(uuid)
-				mock.ExpectQuery("SELECT (.+) FROM users").
-					WithArgs("john", "doe").WillReturnRows(rows)
-			},
-			input: args{"john", "doe"},
-			want: core.User{
-				ID: uuid,
-			},
-		},
-		{
-			name: "Not Found",
-			mock: func() {
-				rows := sqlmock.NewRows([]string{"id"})
-				mock.ExpectQuery("SELECT (.+) FROM users").
-					WithArgs("not", "found").WillReturnRows(rows)
-			},
-			input:   args{"not", "found"},
-			wantErr: true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.mock()
-
-			got, err := repo.GetUser(tt.input.firstName, tt.input.lastName)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("GetUser() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("GetUser() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestUser_CreateUser(t *testing.T) {
+func TestUser_FindOrCreate(t *testing.T) {
 	db, mock := NewMock()
 	repo := NewUser(db)
 	defer func() {
@@ -84,21 +25,21 @@ func TestUser_CreateUser(t *testing.T) {
 	tests := []struct {
 		name    string
 		mock    func()
-		input   core.User
+		input   dto.User
 		want    core.User
 		wantErr bool
 	}{
 		{
 			name: "Ok",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id", "first_name", "last_name", "gender", "birthday"}).AddRow(uuid, "Test", "Test", 0, birthday)
-				mock.ExpectQuery("INSERT INTO users").
-					WithArgs("Test", "Test", core.Male, birthday).WillReturnRows(rows)
+				rows := sqlmock.NewRows([]string{"id", "first_name", "last_name", "gender", "birthday"}).AddRow(uuid, "Test", "Test", "male", birthday)
+				mock.ExpectQuery("SELECT (.+) FROM users").
+					WithArgs("Test", "Test").WillReturnRows(rows)
 			},
-			input: core.User{
+			input: dto.User{
 				FirstName: "Test",
 				LastName:  "Test",
-				Gender:    core.Male,
+				Gender:    "male",
 				Birthday:  birthday,
 			},
 			want: core.User{
@@ -113,13 +54,13 @@ func TestUser_CreateUser(t *testing.T) {
 			name: "Empty Fields",
 			mock: func() {
 				rows := sqlmock.NewRows([]string{"id", "first_name", "last_name", "gender"})
-				mock.ExpectQuery("INSERT INTO users").
+				mock.ExpectQuery("SELECT (.+) FROM users").
 					WithArgs("", "", "", "").WillReturnRows(rows)
 			},
-			input: core.User{
+			input: dto.User{
 				FirstName: "",
 				LastName:  "",
-				Gender:    0,
+				Gender:    "",
 			},
 			wantErr: true,
 		},
@@ -129,13 +70,13 @@ func TestUser_CreateUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := repo.CreateUser(tt.input)
+			got, err := repo.FindOrCreate(&tt.input)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CreateUser() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("FindOrCreate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("CreateUser() = %v, want %v", got, tt.want)
+				t.Errorf("FindOrCreate() = %v, want %v", got, tt.want)
 			}
 		})
 	}

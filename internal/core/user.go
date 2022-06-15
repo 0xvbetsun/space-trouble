@@ -1,13 +1,13 @@
 // Package core represents domain's entities
 package core
 
-import "time"
-
-type Gender int
+import (
+	"time"
+)
 
 const (
-	Male Gender = iota
-	Female
+	Male   = "male"
+	Female = "female"
 )
 
 // User it is an entity of end user for this application
@@ -15,7 +15,7 @@ type User struct {
 	ID        string
 	FirstName string
 	LastName  string
-	Gender    Gender
+	Gender    string
 	Birthday  time.Time
 	CreatedAt time.Time
 }
