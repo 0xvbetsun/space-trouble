@@ -11,7 +11,7 @@ require (
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/spf13/viper v1.15.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/text v0.7.0
+	golang.org/x/text v0.8.0
 )
 
 require (
@@ -36,7 +36,7 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
-	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
