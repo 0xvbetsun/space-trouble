@@ -11,7 +11,7 @@ require (
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/spf13/viper v1.16.0
 	go.uber.org/zap v1.25.0
-	golang.org/x/text v0.12.0
+	golang.org/x/text v0.13.0
 )
 
 require (
